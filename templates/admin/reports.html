@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+
+{% block title %}Informe de Ventas - LaMejorCompra{% endblock %}
+
+{% block content %}
+<!-- Versión {{ version }} - Completamente rediseñada -->
+<div class="container-fluid py-4">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-3 col-lg-2 d-md-block bg-dark admin-sidebar">
+            <div class="position-sticky pt-3">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('admin') }}">
+                            <i class="fas fa-tachometer-alt me-2"></i>
+                            Panel Principal
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{{ url_for('admin_reports') }}">
+                            <i class="fas fa-chart-line me-2"></i>
+                            Informe de Ventas
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Main content - Versión ultra simplificada -->
+        <div class="col-md-9 col-lg-10 admin-content">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+                <h1 class="h2">Informe de Ventas</h1>
+            </div>
+            
+            <!-- Informe de ventas -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Información de Ventas</h5>
+                </div>
+                <div class="card-body">
+                    {% if no_data %}
+                    <div class="alert alert-info">
+                        <h4 class="alert-heading">No hay datos disponibles</h4>
+                        <p>Actualmente no hay datos de ventas para mostrar. Esta sección mostrará estadísticas cuando se registren ventas en el sistema.</p>
+                        <hr>
+                        <p class="mb-0">Las estadísticas se generarán automáticamente a partir de las ventas realizadas.</p>
+                    </div>
+                    {% else %}
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Categoría</th>
+                                    <th>Ventas</th>
+                                    <th>% del Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in sales_summary %}
+                                <tr>
+                                    <td>{{ item.category }}</td>
+                                    <td>${{ "{:,.0f}".format(item.amount).replace(',', '.') }}</td>
+                                    <td>{{ item.percentage }}%</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                            <tfoot>
+                                <tr class="table-dark">
+                                    <th>Total</th>
+                                    <th>${{ "{:,.0f}".format(total_sales).replace(',', '.') }}</th>
+                                    <th>100%</th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

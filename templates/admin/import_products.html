@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+
+{% block title %}Importar Productos - LaMejorCompra{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-3 col-lg-2 d-md-block bg-dark admin-sidebar">
+            <div class="position-sticky pt-3">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('admin') }}">
+                            <i class="fas fa-tachometer-alt me-2"></i>
+                            Panel Principal
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{{ url_for('import_products') }}">
+                            <i class="fas fa-file-import me-2"></i>
+                            Importar Productos
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('admin_reports') }}">
+                            <i class="fas fa-chart-line me-2"></i>
+                            Informe de Ventas
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Main content -->
+        <div class="col-md-9 col-lg-10 admin-content">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+                <h1 class="h2">Importar Productos desde URL</h1>
+            </div>
+            
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title mb-4">Importar productos desde una página web</h5>
+                    <p class="card-text mb-4">
+                        Esta función te permite extraer información de productos desde cualquier página web. 
+                        Proporciona la URL de una página que contenga descripciones de productos tecnológicos y 
+                        el sistema intentará identificar y extraer productos para agregarlos a la tienda.
+                    </p>
+                    
+                    <form method="post" action="{{ url_for('import_products') }}">
+                        <div class="mb-3">
+                            <label for="url" class="form-label">URL de la página web</label>
+                            <input type="url" class="form-control" id="url" name="url" required
+                                   placeholder="https://ejemplo.com/pagina-con-productos">
+                            <div class="form-text">Ingresa la URL completa de la página que contiene información de productos.</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="max_products" class="form-label">Número máximo de productos a importar</label>
+                            <select class="form-select" id="max_products" name="max_products">
+                                <option value="5">5 productos</option>
+                                <option value="10" selected>10 productos</option>
+                                <option value="20">20 productos</option>
+                                <option value="30">30 productos</option>
+                                <option value="50">50 productos</option>
+                            </select>
+                        </div>
+                        
+                        <div class="alert alert-info" role="alert">
+                            <h5 class="alert-heading"><i class="fas fa-info-circle me-2"></i>Información importante</h5>
+                            <p>El sistema extraerá automáticamente:</p>
+                            <ul>
+                                <li>Nombres y descripciones de productos</li>
+                                <li>Asignará categorías basándose en el texto</li>
+                                <li>Generará precios apropiados para productos tecnológicos</li>
+                                <li>Utilizará imágenes predeterminadas según la categoría</li>
+                            </ul>
+                            <p class="mb-0">Es posible que necesites editar algunos productos después de la importación para mejorar su calidad.</p>
+                        </div>
+                        
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="{{ url_for('admin') }}" class="btn btn-outline-secondary me-md-2">Cancelar</a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-file-import me-2"></i>Importar Productos
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

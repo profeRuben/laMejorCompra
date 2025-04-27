@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block title %}Products - TechStore{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mb-4">Product Catalog</h1>
+    
+    <!-- Filter controls -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="input-group">
+                <label class="input-group-text" for="category-filter">Filter by Category</label>
+                <select class="form-select" id="category-filter">
+                    <option value="" {% if not selected_category %}selected{% endif %}>All Categories</option>
+                    {% for category in categories %}
+                        <option value="{{ category }}" {% if selected_category == category %}selected{% endif %}>{{ category }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+    </div>
+    
+    {% if products %}
+        <div class="row">
+            {% for product in products %}
+                <div class="col-md-3 mb-4">
+                    <div class="card product-card h-100">
+                        <img src="{{ product.image_url }}" class="card-img-top product-image" alt="{{ product.name }}">
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">{{ product.name }}</h5>
+                            <p class="card-text text-truncate">{{ product.description }}</p>
+                            <p class="card-text fw-bold">${{ "%.2f"|format(product.price) }}</p>
+                            <div class="mt-auto d-grid gap-2">
+                                <a href="{{ url_for('product_detail', product_id=product.id) }}" class="btn btn-primary">
+                                    <i class="fas fa-info-circle me-2"></i>View Details
+                                </a>
+                                <form action="{{ url_for('add_to_cart', product_id=product.id) }}" method="POST">
+                                    <input type="hidden" name="quantity" value="1">
+                                    <button type="submit" class="btn btn-outline-primary w-100">
+                                        <i class="fas fa-cart-plus me-2"></i>Add to Cart
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle me-2"></i>No products found. Try a different category or check back later.
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

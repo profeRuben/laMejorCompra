@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 300 300">
+  <rect width="300" height="300" fill="#f5f5f5"/>
+  <path d="M230,140H70c-5.5,0-10,4.5-10,10v40c0,5.5,4.5,10,10,10h160c5.5,0,10-4.5,10-10v-40C240,144.5,235.5,140,230,140z M80,175c-2.8,0-5-2.2-5-5s2.2-5,5-5s5,2.2,5,5S82.8,175,80,175z M220,185H100v-30h120V185z" fill="#333"/>
+  <path d="M230,100H70c-5.5,0-10,4.5-10,10v10h180v-10C240,104.5,235.5,100,230,100z" fill="#333"/>
+  <path d="M70,220c-5.5,0-10,4.5-10,10v10h180v-10c0-5.5-4.5-10-10-10H70z" fill="#333"/>
+  <text x="150" y="270" font-family="Arial, sans-serif" font-size="24" fill="#333" text-anchor="middle">Accesorios</text>
+</svg>

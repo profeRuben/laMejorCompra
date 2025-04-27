@@ -1,0 +1,152 @@
+{% extends 'base.html' %}
+
+{% block title %}LaMejorCompra - Teléfonos Móviles Reacondicionados{% endblock %}
+
+{% block content %}
+<!-- Hero Section - Diseño simplificado -->
+<div class="container-fluid bg-dark text-white py-5">
+    <div class="container py-4">
+        <div class="row align-items-center">
+            <div class="col-lg-6 mb-4 mb-lg-0">
+                <h1 class="display-5 fw-bold mb-4">Teléfonos móviles reacondicionados</h1>
+                <p class="fs-5 mb-4">Descubre smartphones Apple y Samsung de alta calidad a precios increíbles. Productos reacondicionados con garantía y rendimiento como nuevos.</p>
+                <div class="d-grid gap-2 d-md-flex justify-content-md-start mb-4">
+                    <a href="{{ url_for('catalog') }}" class="btn btn-primary btn-lg px-4 me-md-2">Ver Productos</a>
+                    <a href="#featured" class="btn btn-outline-light btn-lg px-4">Ver Destacados</a>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="d-flex justify-content-center">
+                    <div class="p-2 mx-2">
+                        <img src="{{ url_for('static', filename='img/apple.svg') }}" class="img-fluid" alt="Apple" style="max-height: 200px;">
+                    </div>
+                    <div class="p-2 mx-2">
+                        <img src="{{ url_for('static', filename='img/samsung.svg') }}" class="img-fluid" alt="Samsung" style="max-height: 200px;">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Feature Boxes - Diseño mejorado -->
+<div class="container py-5">
+    <div class="row g-4">
+        <div class="col-md-3">
+            <div class="card h-100 border-0 bg-dark text-white">
+                <div class="card-body text-center">
+                    <i class="fas fa-truck fa-3x mb-3 text-info"></i>
+                    <h5 class="card-title">Envío Gratis</h5>
+                    <p class="card-text mb-0">En pedidos superiores a $50.000</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card h-100 border-0 bg-dark text-white">
+                <div class="card-body text-center">
+                    <i class="fas fa-undo fa-3x mb-3 text-info"></i>
+                    <h5 class="card-title">Devoluciones Fáciles</h5>
+                    <p class="card-text mb-0">30 días de garantía</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card h-100 border-0 bg-dark text-white">
+                <div class="card-body text-center">
+                    <i class="fas fa-lock fa-3x mb-3 text-info"></i>
+                    <h5 class="card-title">Compra Segura</h5>
+                    <p class="card-text mb-0">100% protegida</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card h-100 border-0 bg-dark text-white">
+                <div class="card-body text-center">
+                    <i class="fas fa-headset fa-3x mb-3 text-info"></i>
+                    <h5 class="card-title">Soporte 24/7</h5>
+                    <p class="card-text mb-0">Estamos aquí para ti</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Featured Products - Diseño simplificado -->
+<div class="container py-5" id="featured">
+    <h2 class="text-center mb-5">Productos Destacados</h2>
+    <div class="row g-4">
+        {% for product in featured_products %}
+        <div class="col-md-3 mb-4">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="position-relative">
+                    <span class="badge bg-danger position-absolute top-0 end-0 m-2">Destacado</span>
+                    <div class="text-center p-3" style="height: 180px; display: flex; align-items: center; justify-content: center;">
+                        <img src="{{ product.image_url }}" alt="{{ product.name }}" class="img-fluid" style="max-height: 150px; object-fit: contain;">
+                    </div>
+                </div>
+                <div class="card-body d-flex flex-column">
+                    <div class="mb-2">
+                        <span class="badge bg-secondary">
+                            {% if product.category == 'apple' %}
+                                Apple
+                            {% elif product.category == 'samsung' %}
+                                Samsung
+                            {% else %}
+                                {{ product.category|capitalize }}
+                            {% endif %}
+                        </span>
+                    </div>
+                    <h5 class="card-title mb-2" style="height: 48px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;">{{ product.name }}</h5>
+                    <p class="card-text small mb-3" style="height: 42px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;">{{ product.description }}</p>
+                    <div class="mt-auto">
+                        <p class="fs-5 fw-bold text-info mb-3">{{ product.price|cl_currency }}</p>
+                        <div class="d-grid gap-2">
+                            <a href="{{ url_for('product_detail', product_id=product.id) }}" class="btn btn-primary btn-sm">Ver Detalles</a>
+                            <form action="{{ url_for('add_to_cart', product_id=product.id) }}" method="post">
+                                <button type="submit" class="btn btn-outline-secondary btn-sm w-100">
+                                    <i class="fas fa-shopping-cart me-1"></i>Añadir al Carrito
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Categories Section - Diseño mejorado -->
+<div class="container py-5">
+    <h2 class="text-center mb-5">Compra por Marca</h2>
+    <div class="row g-4 justify-content-center">
+        <!-- Apple -->
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm bg-dark text-white h-100">
+                <div class="card-header text-center py-4">
+                    <img src="{{ url_for('static', filename='img/apple.svg') }}" alt="Apple" class="img-fluid" style="max-height: 120px;">
+                </div>
+                <div class="card-body d-flex flex-column">
+                    <h3 class="card-title">iPhone</h3>
+                    <p class="card-text">Teléfonos reacondicionados Apple con garantía. Modelos iPhone a precios increíbles.</p>
+                    <a href="{{ url_for('catalog', category='apple') }}" class="btn btn-outline-light mt-auto">Ver iPhones</a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Samsung -->
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm bg-dark text-white h-100">
+                <div class="card-header text-center py-4">
+                    <img src="{{ url_for('static', filename='img/samsung.svg') }}" alt="Samsung" class="img-fluid" style="max-height: 120px;">
+                </div>
+                <div class="card-body d-flex flex-column">
+                    <h3 class="card-title">Samsung Galaxy</h3>
+                    <p class="card-text">Teléfonos reacondicionados Samsung con garantía. Modelos Galaxy a precios increíbles.</p>
+                    <a href="{{ url_for('catalog', category='samsung') }}" class="btn btn-outline-light mt-auto">Ver Galaxy</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

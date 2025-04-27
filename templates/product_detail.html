@@ -1,0 +1,381 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ product.name }} - TechStore{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Breadcrumbs -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ url_for('home') }}">Inicio</a></li>
+            <li class="breadcrumb-item"><a href="{{ url_for('catalog') }}">Tienda</a></li>
+            <li class="breadcrumb-item"><a href="{{ url_for('catalog', category=product.category) }}">
+                {% if product.category == 'keyboard' %}
+                    Teclados
+                {% elif product.category == 'monitor' %}
+                    Monitores
+                {% elif product.category == 'mouse' %}
+                    Ratones
+                {% elif product.category == 'headphones' %}
+                    Auriculares
+                {% elif product.category == 'accessories' %}
+                    Accesorios
+                {% elif product.category == 'storage' %}
+                    Almacenamiento
+                {% else %}
+                    {{ product.category|capitalize }}
+                {% endif %}
+            </a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ product.name }}</li>
+        </ol>
+    </nav>
+
+    <div class="row">
+        <!-- Product Image -->
+        <div class="col-md-6 mb-4">
+            <div class="product-image-container bg-dark p-4 rounded">
+                <img src="{{ product.image_url }}" alt="{{ product.name }}" class="img-fluid" style="max-height: 500px; object-fit: contain; transition: none !important; transform: none !important;">
+            </div>
+        </div>
+        
+        <!-- Product Info -->
+        <div class="col-md-6">
+            <span class="badge bg-secondary mb-2 category-badge">
+                {% if product.category == 'keyboard' %}
+                    Teclado
+                {% elif product.category == 'monitor' %}
+                    Monitor
+                {% elif product.category == 'mouse' %}
+                    Ratón
+                {% elif product.category == 'headphones' %}
+                    Auriculares
+                {% elif product.category == 'accessories' %}
+                    Accesorios
+                {% elif product.category == 'storage' %}
+                    Almacenamiento
+                {% else %}
+                    {{ product.category|capitalize }}
+                {% endif %}
+            </span>
+            {% if product.featured %}
+            <span class="badge bg-danger ms-2">Destacado</span>
+            {% endif %}
+            
+            <h1 class="mb-3">{{ product.name }}</h1>
+            <p class="lead">{{ product.description }}</p>
+            
+            <div class="mb-3">
+                <div class="price-display mb-2">{{ product.price|cl_currency }}</div>
+                {% if product.stock > 0 %}
+                <div class="text-success mb-2">
+                    <i class="fas fa-check-circle me-1"></i> En Stock ({{ product.stock }} disponibles)
+                </div>
+                {% else %}
+                <div class="text-danger mb-2">
+                    <i class="fas fa-times-circle me-1"></i> Agotado
+                </div>
+                {% endif %}
+                {% if product.last_updated %}
+                <div class="small text-muted mb-2">
+                    Última actualización: {{ product.last_updated.strftime('%d/%m/%Y') }}
+                </div>
+                {% endif %}
+            </div>
+            
+            <form action="{{ url_for('add_to_cart', product_id=product.id) }}" method="post" class="mb-4">
+                <div class="d-flex align-items-center mb-3">
+                    <label for="quantity" class="form-label me-3 mb-0">Cantidad:</label>
+                    <div class="quantity-control">
+                        <button type="button" class="btn btn-outline-secondary quantity-dec">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <input type="number" name="quantity" id="quantity" class="form-control quantity-input" value="1" min="1" max="10">
+                        <button type="button" class="btn btn-outline-secondary quantity-inc">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-primary btn-lg" {% if product.stock <= 0 %}disabled{% endif %}>
+                        <i class="fas fa-shopping-cart me-2"></i>Añadir al Carrito
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary">
+                        <i class="far fa-heart me-2"></i>Añadir a Favoritos
+                    </button>
+                </div>
+            </form>
+            
+            <div class="p-3 bg-dark rounded">
+                <div class="mb-2">
+                    <i class="fas fa-truck me-2"></i> Envío gratis en pedidos superiores a $50.000
+                </div>
+                <div class="mb-2">
+                    <i class="fas fa-undo me-2"></i> Devoluciones sin complicaciones durante 30 días
+                </div>
+                <div>
+                    <i class="fas fa-shield-alt me-2"></i> Garantía de 1 año incluida
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Product Details Tabs -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <ul class="nav nav-tabs" id="productTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="description-tab" data-bs-toggle="tab" data-bs-target="#description" type="button" role="tab" aria-controls="description" aria-selected="true">Descripción</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="specifications-tab" data-bs-toggle="tab" data-bs-target="#specifications" type="button" role="tab" aria-controls="specifications" aria-selected="false">Especificaciones</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="reviews-tab" data-bs-toggle="tab" data-bs-target="#reviews" type="button" role="tab" aria-controls="reviews" aria-selected="false">Opiniones</button>
+                </li>
+            </ul>
+            <div class="tab-content p-4 bg-dark rounded-bottom" id="productTabsContent">
+                <div class="tab-pane fade show active" id="description" role="tabpanel" aria-labelledby="description-tab">
+                    <h4>Descripción del Producto</h4>
+                    <p>{{ product.description }}</p>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla quam velit, vulputate eu pharetra nec, mattis ac neque. Duis vulputate commodo lectus, ac blandit elit tincidunt id. Sed rhoncus, tortor sed eleifend tristique, tortor mauris molestie elit, et lacinia ipsum quam nec dui.</p>
+                    <p>Donec ut libero sed arcu vehicula ultricies a non tortor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean ut gravida lorem. Ut turpis felis, pulvinar a semper sed, adipiscing id dolor.</p>
+                </div>
+                <div class="tab-pane fade" id="specifications" role="tabpanel" aria-labelledby="specifications-tab">
+                    <h4>Especificaciones Técnicas</h4>
+                    <table class="table table-striped">
+                        <tbody>
+                            <tr>
+                                <th scope="row">Modelo</th>
+                                <td>{{ product.model }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Categoría</th>
+                                <td>
+                                {% if product.category == 'keyboard' %}
+                                    Teclado
+                                {% elif product.category == 'monitor' %}
+                                    Monitor
+                                {% elif product.category == 'mouse' %}
+                                    Ratón
+                                {% elif product.category == 'headphones' %}
+                                    Auriculares
+                                {% elif product.category == 'accessories' %}
+                                    Accesorios
+                                {% elif product.category == 'storage' %}
+                                    Almacenamiento
+                                {% else %}
+                                    {{ product.category|capitalize }}
+                                {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Fabricante</th>
+                                <td>{% if product.category == 'apple' %}Apple{% else %}Samsung{% endif %}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Stock</th>
+                                <td>{% if product.stock > 0 %}{{ product.stock }} unidades{% else %}Agotado{% endif %}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Peso del Producto</th>
+                                <td>1.2 kg</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Dimensiones</th>
+                                <td>30 x 20 x 10 cm</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Garantía</th>
+                                <td>1 Año</td>
+                            </tr>
+                            {% if product.last_updated %}
+                            <tr>
+                                <th scope="row">Última actualización</th>
+                                <td>{{ product.last_updated.strftime('%d/%m/%Y %H:%M') }}</td>
+                            </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="tab-pane fade" id="reviews" role="tabpanel" aria-labelledby="reviews-tab">
+                    <h4>Opiniones de Clientes</h4>
+                    <div class="mb-4">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="me-3">
+                                <span class="fs-1 fw-bold">4.5</span>
+                                <div>de 5</div>
+                            </div>
+                            <div>
+                                <div class="mb-1">
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star text-warning"></i>
+                                    <i class="fas fa-star-half-alt text-warning"></i>
+                                </div>
+                                <div>Basado en 15 opiniones</div>
+                            </div>
+                        </div>
+                        
+                        {% if current_user.is_authenticated %}
+                        <button class="btn btn-outline-primary mb-3" data-bs-toggle="collapse" data-bs-target="#writeReview">
+                            Escribir una Opinión
+                        </button>
+                        
+                        <div class="collapse mb-4" id="writeReview">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title">Escribe tu Opinión</h5>
+                                    <form>
+                                        <div class="mb-3">
+                                            <label class="form-label">Calificación</label>
+                                            <div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio" name="rating" id="rating1" value="1">
+                                                    <label class="form-check-label" for="rating1">1</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio" name="rating" id="rating2" value="2">
+                                                    <label class="form-check-label" for="rating2">2</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio" name="rating" id="rating3" value="3">
+                                                    <label class="form-check-label" for="rating3">3</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio" name="rating" id="rating4" value="4">
+                                                    <label class="form-check-label" for="rating4">4</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio" name="rating" id="rating5" value="5" checked>
+                                                    <label class="form-check-label" for="rating5">5</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="review-title" class="form-label">Título</label>
+                                            <input type="text" class="form-control" id="review-title" placeholder="Resume tu experiencia">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="review-text" class="form-label">Opinión</label>
+                                            <textarea class="form-control" id="review-text" rows="3" placeholder="Cuéntanos qué te gustó o no te gustó"></textarea>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary">Enviar Opinión</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        {% else %}
+                        <div class="alert alert-info">
+                            <a href="{{ url_for('login') }}">Inicia sesión</a> para escribir una opinión.
+                        </div>
+                        {% endif %}
+                        
+                        <div class="border-top pt-3">
+                            <div class="mb-4">
+                                <div class="d-flex mb-2">
+                                    <div class="me-2">
+                                        <i class="fas fa-user-circle fa-2x"></i>
+                                    </div>
+                                    <div>
+                                        <h5 class="mb-0">Michael S.</h5>
+                                        <div class="small text-muted">hace 2 días</div>
+                                        <div>
+                                            <i class="fas fa-star text-warning"></i>
+                                            <i class="fas fa-star text-warning"></i>
+                                            <i class="fas fa-star text-warning"></i>
+                                            <i class="fas fa-star text-warning"></i>
+                                            <i class="fas fa-star text-warning"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <h6>¡Excelente producto!</h6>
+                                <p>Esto es exactamente lo que estaba buscando. Gran calidad y funciona perfectamente. ¡Altamente recomendado!</p>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <div class="d-flex mb-2">
+                                    <div class="me-2">
+                                        <i class="fas fa-user-circle fa-2x"></i>
+                                    </div>
+                                    <div>
+                                        <h5 class="mb-0">Jessica L.</h5>
+                                        <div class="small text-muted">hace 1 semana</div>
+                                        <div>
+                                            <i class="fas fa-star text-warning"></i>
+                                            <i class="fas fa-star text-warning"></i>
+                                            <i class="fas fa-star text-warning"></i>
+                                            <i class="fas fa-star text-warning"></i>
+                                            <i class="far fa-star text-warning"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <h6>Bueno pero podría ser mejor</h6>
+                                <p>En general estoy contenta con esta compra. La calidad es buena pero hay algunos pequeños problemas que podrían mejorarse.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Related Products -->
+    {% if related_products %}
+    <div class="mt-5">
+        <h3 class="mb-4">Productos Relacionados</h3>
+        <div class="row">
+            {% for product in related_products %}
+            <div class="col-md-3 mb-4" style="transition: none !important; transform: none !important;">
+                <div class="card product-card" style="transform: none !important; transition: none !important;">
+                    <div class="product-image-container" style="transition: none !important; transform: none !important;">
+                        {% if product.featured %}
+                        <span class="badge bg-danger featured-badge">Destacado</span>
+                        {% endif %}
+                        <div style="height: 180px; display: flex; align-items: center; justify-content: center;">
+                            <img src="{{ product.image_url }}" alt="{{ product.name }}" class="p-3 static-image" style="max-height: 160px; max-width: 100%; object-fit: contain; transition: none !important; transform: none !important;">
+                        </div>
+                    </div>
+                    <div class="card-body d-flex flex-column" style="transition: none !important; transform: none !important;">
+                        <span class="badge bg-secondary mb-2 category-badge">
+                        {% if product.category == 'keyboard' %}
+                            Teclado
+                        {% elif product.category == 'monitor' %}
+                            Monitor
+                        {% elif product.category == 'mouse' %}
+                            Ratón
+                        {% elif product.category == 'headphones' %}
+                            Auriculares
+                        {% elif product.category == 'accessories' %}
+                            Accesorios
+                        {% elif product.category == 'storage' %}
+                            Almacenamiento
+                        {% else %}
+                            {{ product.category|capitalize }}
+                        {% endif %}
+                        </span>
+                        <h5 class="card-title" style="min-height: 48px; transition: none !important; transform: none !important;">{{ product.name }}</h5>
+                        <p class="card-text small text-truncate mb-3" style="transition: none !important; transform: none !important;">{{ product.description }}</p>
+                        <div class="mt-auto" style="transition: none !important; transform: none !important;">
+                            <p class="price-display mb-3" style="transition: none !important; transform: none !important;">{{ product.price|cl_currency }}</p>
+                            <div class="d-grid gap-2" style="transition: none !important; transform: none !important;">
+                                <a href="{{ url_for('product_detail', product_id=product.id) }}" class="btn btn-primary btn-sm" style="transition: none !important;">Ver Detalles</a>
+                                <form action="{{ url_for('add_to_cart', product_id=product.id) }}" method="post" style="transition: none !important; transform: none !important;">
+                                    <div class="d-grid" style="transition: none !important; transform: none !important;">
+                                        <button type="submit" class="btn btn-outline-secondary btn-sm" style="transition: none !important;">
+                                            <i class="fas fa-shopping-cart me-1"></i>Añadir al Carrito
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,255 @@
+{% extends 'base.html' %}
+
+{% block title %}Panel de Administración - LaMejorCompra{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-3 col-lg-2 d-md-block bg-dark admin-sidebar">
+            <div class="position-sticky pt-3">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{{ url_for('admin') }}">
+                            <i class="fas fa-tachometer-alt me-2"></i>
+                            Panel Principal
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <i class="fas fa-box me-2"></i>
+                            Productos
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <i class="fas fa-shopping-cart me-2"></i>
+                            Pedidos
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <i class="fas fa-users me-2"></i>
+                            Clientes
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('admin_reports') }}">
+                            <i class="fas fa-chart-line me-2"></i>
+                            Informes
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <i class="fas fa-cog me-2"></i>
+                            Configuración
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Main content -->
+        <div class="col-md-9 col-lg-10 admin-content">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+                <h1 class="h2">Panel de Administración</h1>
+                <div class="btn-toolbar mb-2 mb-md-0">
+                    <form action="{{ url_for('update_catalog') }}" method="post" class="me-2">
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-sync-alt me-2"></i>Actualizar Teléfonos
+                        </button>
+                    </form>
+                    <a href="{{ url_for('add_product') }}" class="btn btn-primary">
+                        <i class="fas fa-plus me-2"></i>Añadir Nuevo Producto
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Product Management -->
+            <h3 class="mb-3">Gestión de Productos</h3>
+            
+            {% if products %}
+            <div class="table-responsive mb-4">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th scope="col">ID</th>
+                            <th scope="col">Imagen</th>
+                            <th scope="col">Nombre</th>
+                            <th scope="col">Modelo</th>
+                            <th scope="col">Categoría</th>
+                            <th scope="col">Precio</th>
+                            <th scope="col">Stock</th>
+                            <th scope="col">Destacado</th>
+                            <th scope="col">Última Actualización</th>
+                            <th scope="col">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for product in products %}
+                        <tr>
+                            <td>{{ product.id }}</td>
+                            <td>
+                                <img src="{{ product.image_url }}" alt="{{ product.name }}" width="50" class="img-thumbnail" style="transition: none !important; transform: none !important;">
+                            </td>
+                            <td>{{ product.name }}</td>
+                            <td>{{ product.model }}</td>
+                            <td>
+                            {% if product.category == 'apple' %}
+                                Apple
+                            {% elif product.category == 'samsung' %}
+                                Samsung
+                            {% else %}
+                                {{ product.category|capitalize }}
+                            {% endif %}
+                            </td>
+                            <td>{{ product.price|cl_currency }}</td>
+                            <td>
+                                <span class="badge {% if product.stock > 0 %}bg-success{% else %}bg-danger{% endif %}">
+                                    {% if product.stock > 0 %}{{ product.stock }}{% else %}Agotado{% endif %}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge {% if product.featured %}bg-success{% else %}bg-secondary{% endif %}">
+                                    {% if product.featured %}Sí{% else %}No{% endif %}
+                                </span>
+                            </td>
+                            <td>
+                                {% if product.last_updated %}
+                                    {{ product.last_updated.strftime('%d/%m/%Y %H:%M') }}
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="d-flex">
+                                    <a href="{{ url_for('edit_product', product_id=product.id) }}" class="btn btn-sm btn-outline-primary me-2">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <form action="{{ url_for('delete_product', product_id=product.id) }}" method="post" onsubmit="return confirm('¿Estás seguro de que deseas eliminar este producto?');">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle me-2"></i> No hay productos disponibles. 
+                <a href="{{ url_for('add_product') }}" class="alert-link">Añade tu primer producto</a>.
+            </div>
+            {% endif %}
+            
+            <!-- Statistics Cards -->
+            <h3 class="mb-3">Estadísticas</h3>
+            <div class="row">
+                <div class="col-md-3 mb-4">
+                    <div class="card text-white bg-primary">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="card-title">Total Productos</h6>
+                                    <h2 class="mb-0">{{ products|length }}</h2>
+                                </div>
+                                <i class="fas fa-box fa-3x opacity-50"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-3 mb-4">
+                    <div class="card text-white bg-success">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="card-title">Total Pedidos</h6>
+                                    <h2 class="mb-0">0</h2>
+                                </div>
+                                <i class="fas fa-shopping-cart fa-3x opacity-50"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-3 mb-4">
+                    <div class="card text-white bg-info">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="card-title">Clientes</h6>
+                                    <h2 class="mb-0">{{ users|length }}</h2>
+                                </div>
+                                <i class="fas fa-users fa-3x opacity-50"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-3 mb-4">
+                    <div class="card text-white bg-warning">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="card-title">Ingresos</h6>
+                                    <h2 class="mb-0">$0</h2>
+                                </div>
+                                <i class="fas fa-dollar-sign fa-3x opacity-50"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Quick Actions -->
+            <h3 class="mb-3">Acciones Rápidas</h3>
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <i class="fas fa-plus-circle text-primary me-2"></i>
+                                Añadir Nuevo Producto
+                            </h5>
+                            <p class="card-text">Añade un nuevo producto al catálogo de tu tienda.</p>
+                            <a href="{{ url_for('add_product') }}" class="btn btn-outline-primary">Añadir Producto</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <i class="fas fa-sync-alt text-success me-2"></i>
+                                Actualizar Catálogo
+                            </h5>
+                            <p class="card-text">Importa teléfonos móviles Apple y Samsung desde Movistar.</p>
+                            <form action="{{ url_for('update_catalog') }}" method="post">
+                                <button type="submit" class="btn btn-outline-success">Actualizar Catálogo</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <i class="fas fa-chart-bar text-info me-2"></i>
+                                Ver Informes
+                            </h5>
+                            <p class="card-text">Visualiza informes de ventas y análisis de clientes.</p>
+                            <a href="{{ url_for('admin_reports') }}" class="btn btn-outline-info">Ver Informes</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

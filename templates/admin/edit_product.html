@@ -1,0 +1,201 @@
+{% extends 'base.html' %}
+
+{% block title %}Editar Producto - Admin - TechStore{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-3 col-lg-2 d-md-block bg-dark admin-sidebar">
+            <div class="position-sticky pt-3">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('admin') }}">
+                            <i class="fas fa-tachometer-alt me-2"></i>
+                            Panel Principal
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">
+                            <i class="fas fa-box me-2"></i>
+                            Productos
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <i class="fas fa-shopping-cart me-2"></i>
+                            Pedidos
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <i class="fas fa-users me-2"></i>
+                            Clientes
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <i class="fas fa-chart-line me-2"></i>
+                            Informes
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <i class="fas fa-cog me-2"></i>
+                            Configuración
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Main content -->
+        <div class="col-md-9 col-lg-10 admin-content">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+                <h1 class="h2">Editar Producto: {{ product.name }}</h1>
+                <div class="btn-toolbar mb-2 mb-md-0">
+                    <a href="{{ url_for('admin') }}" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-2"></i>Volver al Panel
+                    </a>
+                </div>
+            </div>
+            
+            <div class="row mb-4">
+                <div class="col-md-3">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Imagen Actual</h5>
+                            <img src="{{ product.image_url }}" alt="{{ product.name }}" class="img-fluid mb-3" onerror="this.src='https://via.placeholder.com/200x200?text=TechStore'">
+                            <p class="mb-0 text-muted">ID del Producto: {{ product.id }}</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-9">
+                    <div class="card">
+                        <div class="card-body">
+                            <form method="post" action="{{ url_for('edit_product', product_id=product.id) }}">
+                                {{ form.hidden_tag() }}
+                                
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        {{ form.name.label(class="form-label") }}
+                                        {{ form.name(class="form-control") }}
+                                        {% if form.name.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {% for error in form.name.errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                    
+                                    <div class="col-md-3">
+                                        {{ form.model.label(class="form-label") }}
+                                        {{ form.model(class="form-control") }}
+                                        {% if form.model.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {% for error in form.model.errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                    
+                                    <div class="col-md-3">
+                                        {{ form.category.label(class="form-label") }}
+                                        {{ form.category(class="form-control") }}
+                                        {% if form.category.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {% for error in form.category.errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        {{ form.price.label(class="form-label") }}
+                                        {{ form.price(class="form-control") }}
+                                        {% if form.price.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {% for error in form.price.errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                    
+                                    <div class="col-md-6">
+                                        {{ form.stock.label(class="form-label") }}
+                                        {{ form.stock(class="form-control") }}
+                                        {% if form.stock.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {% for error in form.stock.errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                        {% endif %}
+                                        <div class="form-text">Stock actual: {{ product.stock }}</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    {{ form.description.label(class="form-label") }}
+                                    {{ form.description(class="form-control", rows="4") }}
+                                    {% if form.description.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.description.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="mb-3">
+                                    {{ form.image_url.label(class="form-label") }}
+                                    {{ form.image_url(class="form-control") }}
+                                    {% if form.image_url.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.image_url.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                    {% endif %}
+                                    <div class="form-text">Ingrese una URL para la imagen del producto (preferiblemente en formato SVG)</div>
+                                </div>
+                                
+
+                                
+                                <div class="mb-3 form-check">
+                                    {{ form.featured(class="form-check-input") }}
+                                    {{ form.featured.label(class="form-check-label") }}
+                                </div>
+                                
+                                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                    <a href="{{ url_for('admin') }}" class="btn btn-outline-secondary">Cancelar</a>
+                                    {{ form.submit(class="btn btn-primary") }}
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card bg-danger text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Zona de Peligro</h5>
+                    <p class="card-text">Eliminar permanentemente este producto. Esta acción no se puede deshacer.</p>
+                    <form action="{{ url_for('delete_product', product_id=product.id) }}" method="post" onsubmit="return confirm('¿Estás seguro de que deseas eliminar este producto? Esta acción no se puede deshacer.');">
+                        <button type="submit" class="btn btn-outline-light">
+                            <i class="fas fa-trash-alt me-2"></i>Eliminar Producto
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

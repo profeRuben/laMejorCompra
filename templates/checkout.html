@@ -1,0 +1,226 @@
+{% extends 'base.html' %}
+
+{% block title %}Checkout - LaMejorCompra{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <h1 class="mb-4">Finalizar Compra</h1>
+    
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Tu Información</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post" action="{{ url_for('checkout') }}">
+                        {{ form.hidden_tag() }}
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                {{ form.full_name.label(class="form-label") }}
+                                {{ form.full_name(class="form-control") }}
+                                {% if form.full_name.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.full_name.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                {{ form.email.label(class="form-label") }}
+                                {{ form.email(class="form-control") }}
+                                {% if form.email.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.email.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            {{ form.address.label(class="form-label") }}
+                            {{ form.address(class="form-control") }}
+                            {% if form.address.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.address.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-5 mb-3">
+                                {{ form.city.label(class="form-label") }}
+                                {{ form.city(class="form-control") }}
+                                {% if form.city.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.city.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="col-md-4 mb-3">
+                                {{ form.state.label(class="form-label") }}
+                                {{ form.state(class="form-control") }}
+                                {% if form.state.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.state.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="col-md-3 mb-3">
+                                {{ form.zip_code.label(class="form-label") }}
+                                {{ form.zip_code(class="form-control") }}
+                                {% if form.zip_code.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.zip_code.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <hr class="my-4">
+                        
+                        <h5 class="mb-3">Método de Pago</h5>
+                        <div class="mb-3">
+                            {{ form.payment_method.label(class="form-label") }}
+                            {{ form.payment_method(class="form-select") }}
+                            {% if form.payment_method.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.payment_method.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div id="credit-card-fields" class="d-none">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    {{ form.card_number.label(class="form-label") }}
+                                    {{ form.card_number(class="form-control", placeholder="1234 5678 9012 3456") }}
+                                    {% if form.card_number.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.card_number.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="col-md-3 mb-3">
+                                    {{ form.card_expiry.label(class="form-label") }}
+                                    {{ form.card_expiry(class="form-control", placeholder="MM/AA") }}
+                                    {% if form.card_expiry.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.card_expiry.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="col-md-3 mb-3">
+                                    {{ form.card_cvv.label(class="form-label") }}
+                                    {{ form.card_cvv(class="form-control", placeholder="123") }}
+                                    {% if form.card_cvv.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.card_cvv.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <hr class="my-4">
+                        
+                        <div class="form-check mb-3">
+                            <input type="checkbox" class="form-check-input" id="terms-check" required>
+                            <label class="form-check-label" for="terms-check">
+                                Acepto los <a href="#">términos y condiciones</a> y la <a href="#">política de privacidad</a>
+                            </label>
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            {{ form.submit(class="btn btn-primary btn-lg") }}
+                            <a href="{{ url_for('cart') }}" class="btn btn-outline-secondary">Volver al Carrito</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Resumen del Pedido</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-between mb-1">
+                        <span>Productos ({{ cart_items|length }}):</span>
+                        <span>{{ total|cl_currency }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-1">
+                        <span>Envío:</span>
+                        <span>{% if total >= 50 %}Gratis{% else %}$5.999{% endif %}</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-1">
+                        <span>IVA (19%):</span>
+                        <span>{{ (total * 0.19)|cl_currency }}</span>
+                    </div>
+                    <hr>
+                    <div class="d-flex justify-content-between fw-bold">
+                        <span>Total:</span>
+                        <span>{{ (total + (0 if total >= 50 else 5.999) + (total * 0.19))|cl_currency }}</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Tus Productos</h5>
+                </div>
+                <div class="card-body">
+                    {% for item in cart_items %}
+                    <div class="row mb-3 {% if not loop.last %}border-bottom pb-3{% endif %}">
+                        <div class="col-3">
+                            <img src="{{ item.product.image_url }}" alt="{{ item.product.name }}" class="img-fluid rounded" style="transition: none !important; transform: none !important;">
+                        </div>
+                        <div class="col-9">
+                            <h6 class="mb-0">{{ item.product.name }}</h6>
+                            <small class="text-muted d-block">Cant: {{ item.quantity }}</small>
+                            <span class="fw-bold">{{ item.total|cl_currency }}</span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-body">
+                    <h6>Pago Seguro</h6>
+                    <p class="small mb-0">
+                        <i class="fas fa-lock me-1 text-success"></i>
+                        Tu información de pago se procesa de forma segura y nunca se almacena en nuestros servidores.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

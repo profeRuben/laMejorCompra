@@ -1,0 +1,125 @@
+/* Custom styles to complement Bootstrap */
+
+/* Product card with no animations */
+.product-card {
+  height: 100%;
+  box-shadow: none !important;
+  transform: none !important;
+  transition: none !important;
+}
+
+/* Product image container */
+.product-image-container {
+  overflow: hidden;
+  position: relative;
+}
+
+/* No animations on images */
+img {
+  transition: none !important;
+  transform: none !important;
+  animation: none !important;
+}
+
+/* Featured product badge */
+.featured-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 10;
+}
+
+/* Cart quantity control */
+.quantity-control {
+  display: flex;
+  align-items: center;
+}
+
+.quantity-control .btn {
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.quantity-input {
+  width: 50px;
+  text-align: center;
+}
+
+/* Order detail styles */
+.order-header {
+  background-color: var(--bs-dark);
+  border-radius: 0.25rem;
+  padding: 15px;
+  margin-bottom: 20px;
+}
+
+.order-number {
+  font-family: monospace;
+  letter-spacing: 1px;
+}
+
+/* Admin panel styles */
+.admin-sidebar {
+  min-height: calc(100vh - 56px);
+  border-right: 1px solid var(--bs-gray-800);
+}
+
+.admin-content {
+  padding: 20px;
+}
+
+/* Responsive image grid */
+.img-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 15px;
+}
+
+/* Footer styles */
+.footer {
+  margin-top: 100px;
+  padding: 40px 0;
+  background-color: var(--bs-dark);
+  color: var(--bs-light);
+}
+
+/* Category badge */
+.category-badge {
+  text-transform: capitalize;
+  font-size: 0.8rem;
+}
+
+/* Price display */
+.price-display {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--bs-info);
+}
+
+/* Sale price */
+.sale-price {
+  color: var(--bs-danger);
+}
+
+.original-price {
+  text-decoration: line-through;
+  color: var(--bs-gray-600);
+  font-size: 1rem;
+}
+
+/* Feature section */
+.feature-box {
+  padding: 20px;
+  border-radius: 0.25rem;
+  text-align: center;
+  height: 100%;
+}
+
+.feature-box i {
+  font-size: 3rem;
+  margin-bottom: 15px;
+  color: var(--bs-info);
+}

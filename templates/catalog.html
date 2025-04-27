@@ -1,0 +1,159 @@
+{% extends 'base.html' %}
+
+{% block title %}Catálogo de Teléfonos - LaMejorCompra{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <h1 class="mb-4">
+        {% if current_category %}
+            Productos de {{ current_category|capitalize }}
+        {% elif search_term %}
+            Resultados para "{{ search_term }}"
+        {% else %}
+            Todos los Productos
+        {% endif %}
+    </h1>
+    
+    <div class="row">
+        <!-- Sidebar with filters -->
+        <div class="col-md-3 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Filtros</h5>
+                </div>
+                <div class="card-body">
+                    <h6 class="border-bottom pb-2">Categorías</h6>
+                    <div class="mb-3">
+                        <div class="list-group">
+                            <a href="{{ url_for('catalog') }}" class="list-group-item list-group-item-action {% if not current_category %}active{% endif %}">
+                                Todos los Productos
+                            </a>
+                            {% for category in categories %}
+                            <a href="{{ url_for('catalog', category=category) }}" 
+                                class="list-group-item list-group-item-action {% if current_category == category %}active{% endif %}">
+                                {% if category == 'apple' %}
+                                    Apple
+                                {% elif category == 'samsung' %}
+                                    Samsung
+                                {% else %}
+                                    {{ category|capitalize }}
+                                {% endif %}
+                            </a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    
+                    <h6 class="border-bottom pb-2">Rango de Precio</h6>
+                    <div class="mb-3">
+                        <form>
+                            <div class="mb-3">
+                                <label for="min-price" class="form-label">Precio Mínimo:</label>
+                                <input type="number" class="form-control" id="min-price" min="0" step="0.01">
+                            </div>
+                            <div class="mb-3">
+                                <label for="max-price" class="form-label">Precio Máximo:</label>
+                                <input type="number" class="form-control" id="max-price" min="0" step="0.01">
+                            </div>
+                            <button type="submit" class="btn btn-sm btn-outline-primary">Aplicar</button>
+                        </form>
+                    </div>
+                    
+                    <h6 class="border-bottom pb-2">Ordenar Por</h6>
+                    <div class="mb-3">
+                        <select class="form-select">
+                            <option value="default">Recomendados</option>
+                            <option value="price-asc">Precio: Menor a Mayor</option>
+                            <option value="price-desc">Precio: Mayor a Menor</option>
+                            <option value="name-asc">Nombre: A a Z</option>
+                            <option value="name-desc">Nombre: Z a A</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Product Grid -->
+        <div class="col-md-9">
+            <!-- Search result summary if applicable -->
+            {% if search_term %}
+            <div class="alert alert-info mb-4">
+                Se encontraron {{ products|length }} resultados para "{{ search_term }}"
+                <a href="{{ url_for('catalog') }}" class="float-end">Limpiar Búsqueda</a>
+            </div>
+            {% endif %}
+            
+            {% if products %}
+            <div class="row">
+                {% for product in products %}
+                <div class="col-md-4 mb-4" style="transition: none !important; transform: none !important;">
+                    <div class="card product-card" style="transform: none !important; transition: none !important;">
+                        <div class="product-image-container" style="transition: none !important; transform: none !important;">
+                            {% if product.featured %}
+                            <span class="badge bg-danger featured-badge">Destacado</span>
+                            {% endif %}
+                            <div style="height: 200px; display: flex; align-items: center; justify-content: center;">
+                                <img src="{{ product.image_url }}" alt="{{ product.name }}" class="p-3 static-image" style="max-height: 180px; max-width: 100%; object-fit: contain; transition: none !important; transform: none !important;">
+                            </div>
+                        </div>
+                        <div class="card-body d-flex flex-column" style="transition: none !important; transform: none !important;">
+                            <span class="badge bg-secondary mb-2 category-badge">
+                                {% if product.category == 'apple' %}
+                                    Apple
+                                {% elif product.category == 'samsung' %}
+                                    Samsung
+                                {% else %}
+                                    {{ product.category|capitalize }}
+                                {% endif %}
+                            </span>
+                            <h5 class="card-title" style="min-height: 48px; transition: none !important; transform: none !important;">{{ product.name }}</h5>
+                            <p class="card-text small text-truncate mb-3" style="transition: none !important; transform: none !important;">{{ product.description }}</p>
+                            <div class="mt-auto" style="transition: none !important; transform: none !important;">
+                                <p class="price-display mb-3" style="transition: none !important; transform: none !important;">{{ product.price|cl_currency }}</p>
+                                {% if product.stock > 0 %}
+                                <p class="text-success small mb-3"><i class="fas fa-check-circle"></i> {{ product.stock }} disponibles</p>
+                                {% else %}
+                                <p class="text-danger small mb-3"><i class="fas fa-times-circle"></i> Agotado</p>
+                                {% endif %}
+                                <div class="d-grid gap-2" style="transition: none !important; transform: none !important;">
+                                    <a href="{{ url_for('product_detail', product_id=product.id) }}" class="btn btn-primary btn-sm" style="transition: none !important;">Ver Detalles</a>
+                                    <form action="{{ url_for('add_to_cart', product_id=product.id) }}" method="post" style="transition: none !important; transform: none !important;">
+                                        <div class="d-grid" style="transition: none !important; transform: none !important;">
+                                            <button type="submit" class="btn btn-outline-secondary btn-sm" style="transition: none !important;">
+                                                <i class="fas fa-shopping-cart me-1"></i>Añadir al Carrito
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="alert alert-warning">
+                <i class="fas fa-exclamation-circle me-2"></i> No se encontraron productos.
+                {% if search_term or current_category %}
+                <p class="mb-0 mt-2">Intenta ajustar tus criterios de búsqueda o <a href="{{ url_for('catalog') }}">ver todos los productos</a>.</p>
+                {% endif %}
+            </div>
+            {% endif %}
+            
+            <!-- Pagination -->
+            <nav aria-label="Paginación de productos" class="mt-4">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Anterior</a>
+                    </li>
+                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item">
+                        <a class="page-link" href="#">Siguiente</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+{% endblock %}
