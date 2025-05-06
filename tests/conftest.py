@@ -1,8 +1,20 @@
 import os
+import sys
 import tempfile
 import pytest
-from app import app as flask_app
-from extensions import db
+
+# Añade el directorio principal al path de Python
+sys.path.insert(0, os.path.abspath(os.path.dirname(os.path.dirname(__file__))))
+
+# Importa después de ajustar el path
+try:
+    from app import app as flask_app
+    from extensions import db
+except ImportError as e:
+    print(f"Error al importar: {e}")
+    print("Asegúrate de haber instalado todas las dependencias necesarias:")
+    print("pip install flask-login flask-wtf flask-sqlalchemy werkzeug")
+    raise
 
 @pytest.fixture
 def app():
