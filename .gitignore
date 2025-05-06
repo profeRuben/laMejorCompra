@@ -41,3 +41,39 @@ replit.nix
 .breakpoints
 poetry.lock
 .pythonlibs/
+
+# === ADICIONES PARA PRUEBAS Y SEGURIDAD ===
+
+# Nessus / OWASP ZAP
+*.nessus
+*.nessus.db
+*.jmx
+*.jtl
+*.bak
+*.zaplog
+*.session
+
+# JMeter
+*.csv
+*.xml
+.jmeter.log
+
+# Resultados de pruebas automatizadas
+test-output/
+coverage/
+htmlcov/
+*.cover
+*.py,cover
+.cache
+nosetests.xml
+coverage.xml
+*.mochawesome.json
+
+# Archivos de empaquetado y reportes
+*.rar
+*.zip
+*.tar.gz
+*.7z
+*.docx
+*.pdf
+*.xlsx
